@@ -9,12 +9,13 @@ using Test, QuadraticModels, SparseArrays, NLPModels, NLPModelsIpopt, LinearOper
 	ucon = [Inf; 6.0]
 	uvar = [20; Inf]
 	lvar = [0.0; 0.0]
+	objective = 4.3718750e+00
 
 	qp = QuadraticModel(c, Q, opHermitian(Q), A, lcon, ucon, lvar, uvar, c0=c0)
 	output = ipopt(qp, print_level=0)
 
 	@test output.dual_feas < 1e-6
 	@test output.primal_feas < 1e-6
-	@test norm(output.objective - objectives[k]) < 1e-6
+	@test norm(output.objective - objective) < 1e-6
 
 end # testset
