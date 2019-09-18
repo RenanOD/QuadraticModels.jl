@@ -1,3 +1,6 @@
+export jac_structure!
+import NLPModels.jac_structure!
+
 mutable struct QPData
     c0::Float64                 # constant term in objective
     c::AbstractVector{Float64}  # linear term
@@ -101,6 +104,14 @@ function cons!(qp::AbstractQuadraticModel, x::AbstractVector, c::AbstractVector)
     mul!(c, qp.data.A, x)
     qp.counters.neval_jprod += 1
     c
+end
+
+"""
+Return the structure of the constraint's Jacobian in sparse coordinate format in place.
+"""
+function jac_structure!(qp :: QuadraticModel, rows :: Vector{Int}, cols :: Vector{Int}; kwargs...)
+  rows .= qp.data.A.rowval
+  cols .= finddnz(qp.data.A)[2]
 end
 
 jac_coord(qp::AbstractQuadraticModel, ::AbstractVector; kwargs...) = findnz(qp.data.A)
